@@ -1,0 +1,260 @@
+<html manifest="cache.manifest">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="content-language" content="en">
+<link rel="stylesheet" href="style.css">
+<title>Relation</title>
+<head>
+<script src="relation.js"></script>
+<script>
+
+var filelist = {};
+
+function displayHelp()
+{
+	document.getElementById("content").innerHTML = "<h2>Welcome to Relation</h2><br>"+
+	"This tool allows you to make ralation algebra with textfiles (CSV and TAB).<br>"+
+	"This is a port of the relation command line application, written in JavaScript.<br><br>"+
+	"All work is local (no uploaded files).<br>"+
+	"You can open and save tables as .csv or as tab delimited .txt file.<br>"+
+	"Files must have unique column titles. Columnn titles must have the format /[a-zA-Z][a-zA-Z1-9_]*/ <br><br>"+
+	"You can open and save command lists as .rel files. These simply save the text in the console.<br>"+
+	"You can open and save entire projects as .json files. <br><br>"+
+	
+	"You add the files first and then you use them in the console:<br>"+
+	"<b>read</b> filename<br>"+
+	"<b>write</b> filename<br><br>"+
+	
+	"You can then apply the following relational algebra operations:<br>"+
+	"<b>select</b> expression<br>"+
+	"<b>project</b> column aggregator? (, column aggegrator?)*<br>"+
+	"<b>rename </b>oldcolumn newcolumn (, oldcolumn newcolumn?)*<br>"+
+	"<b>union</b><br>"+
+	"<b>difference</b><br>"+
+	"<b>join</b> (NATURAL|LEFT|RIGHT|OUTER|LEFTSEMI|RIGHTSEMI|LEFTANTI|expression)<br><br>"+
+	"and the (non relational operations):<br>"+
+	"<b>extend</b> column expression<br>"+
+	"<b>limit</b> start count<br>"+
+	"<b>order</b> column ordermode<br><br>"+
+	"You also define relation ad hoc and insert rows:<br>"+
+	"<b>relation</b> column (, column)*<br>"+
+	"<b>insert</b> value (, value)*<br><br>"+
+	"Finally, you can manipulate the operation stack:<br>"+
+	"<b>dup</b><br>"+
+	"<b>pop</b><br>"+
+	"<b>swap</b><br><br>"+
+	"And print out the results:<br>"+
+	"<b>print</b><br>"+
+	"<b>arity</b><br>"+
+	"<b>header</b><br>"+
+	"<b>graph</b><br>"+
+	"<b>//</b> comment<br><br>"+
+	"Expressions can use columns, operators, numbers, strings in quotes and paranthesises<br>"+
+	"mathematical operators + - / *<br>"+
+	"comparision = <= >= !=  <br>"+
+	"regular expressions reg /abc/ <br>"+
+	"logical operators and or xor not<br><br>"+
+	"Aggregators can be uses in projections<br>"+
+	"count sum min max avg median<br><br>"+
+	"Order modes<br>"+
+	"Alphabetically A, reversed Z, numerically 1 reversed 9<br>";
+	
+	
+	
+}
+
+/*
+function displayExemples()
+{
+	document.getElementById("content").innerHTML = "<h2>Examples</h2><br>"+
+	"These are the same examples as the ones used for Relation for Excel.<br>"+
+	'<button onclick="loadExample(\"products-1.json\")">products-1.json</button><br>'+
+	'<button onclick="loadExample(\"products-2.json\")">products-2.json</button><br>'+
+	'<button onclick="loadExample(\"products-3.json\")">products-3.json</button><br>'+
+	'<button onclick="loadExample(\"employees-1.json\")">employees-1.json</button><br>'+
+	'<button onclick="loadExample(\"employees-2.json\")">employees-2.json</button><br>'+
+	'<button onclick="loadExample(\"employees-3.json\")">employees-3.json</button><br>'+
+	'<button onclick="loadExample(\"boxes-1.json\")">boxes-1.json</button><br>'+
+	'<button onclick="loadExample(\"boxes-2.json\")">boxes-2.json</button><br>'+
+	'<button onclick="loadExample(\"pieces-1.json\")">products-1.json</button><br>'+
+	'<button onclick="loadExample(\"pieces-2.json\")">products-2.json</button><br>'+
+	'<button onclick="loadExample(\"accounts.json\")">accounts.json</button><br>';
+}
+
+function loadExample(path)
+{
+	
+	var rawFile = new XMLHttpRequest();
+  	rawFile.open("GET", path, true);
+  	rawFile.onreadystatechange = function() {
+    if (rawFile.readyState === 4) {
+     var allText = rawFile.responseText;
+     document.getElementById("content").innerHTML = allText;
+    }
+  }
+}
+*/
+
+function buildFileList()
+{
+	var items=[];
+	for(i in filelist)
+	{
+		items.push("<button onclick='showFile(\""+i+"\")'>"+i+"</button><button onclick='downloadFile(\""+i+"\")'>⤓</button><button onclick='deleteFile(\""+i+"\")'>x</button><br/>");
+	}
+	document.getElementById("filelist").innerHTML = items.join(" ");
+	
+	/*items=[];
+	console.log(stack);
+	for(i in stack)
+	{
+		items.push("<button onclick='showFile(\""+i+"\")'>"+i+"</button><button onclick='downloadFile(\""+i+"\")'>⤓</button>");
+	}
+	document.getElementById("stacklist").innerHTML = items.join(" ");*/
+}
+
+var showFile = function(f)
+{
+	document.getElementById('content').innerHTML = filelist[f];
+};
+
+
+var downloadFile = function(f)
+{
+	var link = document.createElement("a");
+	link.href = "data:text;charset=utf-8," + escape(filelist[f]);
+	link.download = f;
+	link.click();
+};
+
+var deleteFile = function(f)
+{
+	delete(filelist[f]);
+	buildFileList();
+}
+
+var openFile = function(event) {
+    var input = event.target;
+
+    var reader = new FileReader();
+    reader.onload = function(){ 
+      document.getElementById('content').innerHTML = reader.result;
+      
+      if (input.files[0].name.substr(-4,4) == "json")
+      	openProject(reader.result);
+      else
+      {
+      	filelist[input.files[0].name] = reader.result;
+      	console.log(filelist);
+      	buildFileList();
+      }
+    };
+    reader.readAsText(input.files[0]);    
+  };
+  
+function run()
+{
+	consoleClear();
+	swHistory = [];  
+	
+	commands = document.getElementById('consoletext').value.split("\n");
+		
+	for(c in commands)
+	{
+		if (commands[c].trim())
+		linehandler(commands[c]);
+	}
+	
+}
+
+function openProject(s)
+{
+	var j = JSON.parse(s);
+	
+	swHistory = j["commands"];
+	filelist = j["files"];
+	
+	consoleClear();
+	
+	document.getElementById('consoletext').value = swHistory.join("\n");
+	buildFileList();
+}
+
+
+function saveProject()
+{
+	// command
+	
+	savefile = {};
+	savefile["commands"] = swHistory.slice();
+	
+	// all files
+	savefile["files"] = filelist;
+	
+	consoleClear();
+	
+	var link = document.createElement("a");
+	link.href = "data:text/json;charset=utf-8," + escape(JSON.stringify(savefile));
+	
+	link.download = "project.json";
+	link.click();
+
+}
+
+
+function consoleClear() { document.getElementById('content').innerHTML = ""; }
+
+function consoleLog (msg) { document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + msg + "<br>";}
+
+function onTestChange() {
+    var key = window.event.keyCode;
+    // If the user has pressed enter
+    if (key === 13) {
+    	consoleClear();
+ 		run(document.getElementById('consoletext').value);
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+
+function readFileSync(body,form) { return filelist[body]; };
+
+function writeFileSync(body, s, form) { filelist[body] = s;  buildFileList(); }
+
+window.console.log = consoleLog;
+
+
+</script>
+</head>
+<body>
+<div id="menu">
+<h1>Relation</h1>
+<p><label for="file-upload" class="custom-file-upload"><input id="file-upload" type="file" onchange="openFile(event)"/>Open</label>
+<button onclick="run()">Run</button>
+<button onclick="saveProject()">Save</button>
+<button onclick="displayHelp()">Help</button>
+<!-- <button onclick="displayExemples()">Examples</button>-->
+<div id="filetree">
+<h2>Files</h2>
+<div id="filelist">
+</div>
+<!--<h2>Stack</h2>
+<div id="stacklist">
+</div>-->
+</div>
+<div id="console">
+<h2>Console</h2>
+<textarea class="console" id="consoletext" onkeypress="onTestChange()"></textarea>
+</div>
+</div> 
+<div id="content"><h2>Welcome to Online Relation Algebra</h2>
+This tool allows you to make ralation algebra with textfiles (CSV and TAB).
+This is a port of the relation command line application, written in JavaScript.
+</div>
+<div id="footer">
+<p>&copy; 2019 belle-nuit.com v0.1</p>
+</div>
+</body>
+</html>

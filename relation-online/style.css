@@ -1,0 +1,111 @@
+body 
+{
+	font-family: "Lucida Console", Monaco, monospace;
+}
+h1, h2
+{ 
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: bold;
+}
+p
+{
+	font-size: 16px;
+	line-height: 20px;
+}
+#content
+{
+	font-size: 16px;
+	line-height: 20px;
+    white-space: pre;
+}
+a
+{
+	color: black;
+	text-decoration: underline;
+}
+
+#header
+{
+	width: 1240px;
+	height: 70px;
+	border : 1px solid black;
+	border-collapse: collapse;
+	padding: 10px;
+	margin: 10px;
+	
+}
+
+#menu
+{
+	width: 358px;
+	min-height:640px;
+	border : 1px solid black;
+	border-collapse: collapse;
+	padding: 10px;
+	margin: 10px;
+	float:left;
+	
+}
+
+#filetree
+{	
+}
+
+div #console
+{
+	
+}
+
+textarea.console
+{
+	width: 100%;
+	min-height: 400px;
+	color: white;
+	background-color: black;
+	font-size: 16px;
+	font-family: "Lucida Console", Monaco, monospace;
+}
+
+#content
+{
+	
+	position: absolute;
+	left: 400px;
+	min-height:640px;
+	//width: 840px;
+	//border : 1px solid black;
+	//border-collapse: collapse;
+	padding: 10px;
+	margin: 10px;
+	//float:left;
+}
+
+#footer
+{
+	
+	padding: 10px;
+	margin: 10px;
+	clear:left;
+}
+
+button {
+     background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     
+     border-bottom:1px solid #444; 
+     cursor: pointer;
+}
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    display: inline-block;
+    cursor: pointer;
+  
+    border-bottom:1px solid #444; 
+}
