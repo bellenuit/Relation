@@ -909,15 +909,23 @@ function swRelation(columns) {
 		return result;
 	};
 	this.fromCSV = function(source) {
+		//console.log("0");
 		var arr = parseCSV(source)
 		var line = '';
 		
-		var columns = arr.shift().map(function(s) {return fix_identifier(s.trim());} );		
+		var columns = arr.shift().map(function(s) {return fix_identifier(s.trim());} );	
+		//console.log("a");	
 		check_identifiers(columns);
+		//console.log("b");	
 		var result = new swRelation(columns);
+		//console.log("c");	
 		while (arr.length > 0)
 		{
-			result.insert(arr.shift());
+			//normalize (empty fields at end
+			var tuple = arr.shift();
+			while (tuple.length < columns.length) tuple.push('');
+			//console.log(tuple.length+" "+columns.length);
+			result.insert(tuple);
 		}
 		return result;
 		
