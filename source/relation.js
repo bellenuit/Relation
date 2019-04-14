@@ -31,7 +31,7 @@ if (process.argv.length > 3 && process.argv[2] == '-b')
 
 function linehandler(line) {
   
-  if (line == '') { swHistory.push(line); return; }
+  if (line == '') { history.push(line); return; }
   var command = line.replace(/ .*/,'').toLowerCase();
   var body = line.substr(command.length+1);
   var fields = body.split(' ');
@@ -256,7 +256,6 @@ function linehandler(line) {
   							 interactive = 0;
   							 for (t in list) {
 								linehandler(list[t]);
-								history.push(line);
 							}
 							interactive = 1;
 							break;
@@ -1063,8 +1062,8 @@ function swRelation(columns) {
 						case "min":
 							v="";
 							for (a in arr){
-								if (v=="") v = arr[a];
-								if (arr[a]<v) v= arr[a];
+								if (v=="") v = arr[a]*1;
+								if (arr[a] - v < 0) v= arr[a];
 							}
 							break;
 						case "max":
@@ -1072,7 +1071,7 @@ function swRelation(columns) {
 							v="";
 							for (a in arr){
 								if (v=="") v = arr[a];
-								if (arr[a]>v) v= arr[a];
+								if (arr[a] - v > 0) v= arr[a];
 							}
 							break;
 						case "median":

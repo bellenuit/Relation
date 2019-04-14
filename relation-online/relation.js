@@ -284,7 +284,6 @@ function linehandler(line) {
   							 interactive = 0;
   							 for (t in list) {
 								linehandler(list[t]);
-								swHistory.push(line);
 							}
 							interactive = 1;
 							break;
@@ -1104,8 +1103,8 @@ function swRelation(columns) {
 						case "min":
 							v="";
 							for (a in arr){
-								if (v=="") v = arr[a];
-								if (arr[a]<v) v= arr[a];
+								if (v=="") v = arr[a]*1;
+								if (arr[a] - v < 0) v= arr[a];
 							}
 							break;
 						case "max":
@@ -1113,7 +1112,7 @@ function swRelation(columns) {
 							v="";
 							for (a in arr){
 								if (v=="") v = arr[a];
-								if (arr[a]>v) v= arr[a];
+								if (arr[a] - v > 0) v= arr[a];
 							}
 							break;
 						case "median":
