@@ -36,10 +36,11 @@ Expressions can use
 - numbers
 - quoted strings
 - mathematical operators + - / *
+- cocatenation .
 - comparison operators = != < <= >=
 - logical operators and or nor not
 - grouping paranthesis ()
-
+- functions
 
 Agregators can be
 
@@ -49,6 +50,7 @@ Agregators can be
 - min
 - avg
 - median
+- stdefv
 
 You can use also non-relational operators:
 
@@ -83,6 +85,21 @@ The history of the command line can be saved as .rel file to be reused:
 - write h.rel
 - read h.rel
 - run
+
+Installed functions
+- abs(v)
+- bar(v) shows a histogram bar using braille characters
+- floor(v)
+- ifnz(v1,v2) : use v2, if v1 is zero
+- max/v1,v2)
+- min(v1,v2)
+- plusminus(v) shows a histogram bar with + and - characters
+- replace(s,old,new)
+- regex(exp,s)
+- sqrt(v)
+
+
+
 
 matti@belle-nuit.com
 13.4.2019
