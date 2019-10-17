@@ -25,7 +25,7 @@ if (process.argv.length > 3 && process.argv[2] == '-b')
 	for (t in list) {
 		linehandler(list[t]);
 	}
-	interactive = 1;
+	rl.close(); 
 }
 
 
@@ -116,7 +116,7 @@ function linehandler(line) {
  		 		
  		 		case 'dup': level = level + 1; 
  		 		
- 		 		console.log(pf+'├'+'─'.repeat(31)+'┐');
+ 		 		console.log(pf+'├'+' -'.repeat(31)+'┐');
  		 		
  		 		break;
  		 		
@@ -125,7 +125,7 @@ function linehandler(line) {
  		 		case 'union': level = level - 1; 
  		 		
  		 		pf = pf0.repeat(level);
- 		 		console.log(pf+'├'+'─'.repeat(31)+'┘');
+ 		 		console.log(pf+'├'+' -'.repeat(31)+'┘');
  		 		
  		 		break;
  		 		
@@ -157,9 +157,9 @@ function linehandler(line) {
  		 	//c = c.replace('select','σ').replace('project','π').replace('rename','ρ').replace('union','∪').replace('join','⨝')
  		 	//s = c+' '+b;
  		 	
- 		 	//console.log(pf + '┌'+'─'.repeat(30)+'┐');
+ 		 	//console.log(pf + '┌'+' -'.repeat(30)+'┐');
  		 	//console.log(pf + '│ '+(s+' '.repeat(28)).substr(0,28)+' │');
- 		 	//console.log(pf + '└'+'─'.repeat(30)+'┘');
+ 		 	//console.log(pf + '└'+' -'.repeat(30)+'┘');
  		 	console.log(pf + s);
  		 	
  		  }
@@ -480,7 +480,7 @@ function swExpression(expression, extentions)
 	arities['logxor'] = 2; functions['logxor'] = function(a) { if((a[1] || a[0])&&(!a[1] || !a[0]) ) return 1; return 0;};
 	arities['not'] = 1; functions['not'] = function(a) { return !a[0]; };
 	
-	arities['ifnz'] = 2; functions['ifnz'] = function(a) { if (parseFloat(a[0])) return a[0]; return a[1];};
+	arities['ifnz'] = 2; functions['ifnz'] = function(a) { if (!isNaN(a[0]) && parseFloat(a[0])>0) return a[0]; return a[1];};
 	arities['replace'] = 3; functions['replace'] = function(a) { return String(a[0]).replace(String(a[1]),String(a[2])); };
 	
 	arities['bar'] = 1; functions['bar'] = function(a) { 
